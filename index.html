@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informaticbot Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .search-container {
+            margin-top: 20px;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .nav-buttons {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #results {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .result-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        .result-item img {
+            max-width: 100px;
+            max-height: 100px;
+            float: left;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <img src="icona.png" alt="Informaticbot Icon" class="icon">
+    <h1>Informaticbot, il browser web dell’informatica.</h1>
+    <p><strong>Prendi informazioni dal nostro motore di ricerca.</strong></p>
+    <p>Il nostro motore di ricerca può commettere errori durante l’invio e la ricezione delle informazioni, quindi dateci un contributo anche voi. Se ci sono errori o problemi, contattate l’assistenza alla mail <strong>informaticbot3313@gmail.com</strong>.</p>
+    
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Cerca...">
+        <button onclick="searchWikipedia()">Cerca</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <div class="nav-buttons">
+        <button onclick="goBack()">
+            <img src="indietro.png" alt="Indietro" width="30">
+        </button>
+        <button onclick="goForward()">
+            <img src="avanti.png" alt="Avanti" width="30">
+        </button>
+        <button onclick="goHome()">
+            <img src="home.png" alt="Home" width="30">
+        </button>
+        <button onclick="refreshPage()">
+            <img src="aggiorna.png" alt="Aggiorna" width="30">
+        </button>
+        <button onclick="closeWindow()">
+            <img src="esci.png" alt="Esci" width="30">
+        </button>
+    </div>
+    
+    <script>
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchWikipedia();
+            }
+        });
+
+        function searchWikipedia() {
+            let query = document.getElementById('searchInput').value;
+            let url = `https://it.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|extracts&exintro=1&explaintext=1&pithumbsize=200&generator=search&gsrsearch=${encodeURIComponent(query)}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById('results');
+                    resultsContainer.innerHTML = '';
+                    
+                    if (data.query) {
+                        Object.values(data.query.pages).forEach(page => {
+                            let imgSrc = page.thumbnail ? page.thumbnail.source : 'https://via.placeholder.com/100';
+                            resultsContainer.innerHTML += `
+                                <div class='result-item'>
+                                    <img src="${imgSrc}" alt="${page.title}">
+                                    <h2>${page.title}</h2>
+                                    <p>${page.extract}</p>
+                                    <p><a href="https://it.wikipedia.org/wiki/${encodeURIComponent(page.title)}" target="_blank">Leggi di più</a></p>
+                                </div>`;
+                        });
+                    } else {
+                        resultsContainer.innerHTML = '<p>Nessun risultato trovato.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore:', error);
+                    alert('Errore nel recupero delle informazioni.');
+                });
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+        
+        function goForward() {
+            window.history.forward();
+        }
+        
+        function goHome() {
+            window.location.href = window.location.origin;
+        }
+        
+        function refreshPage() {
+            window.location.reload();
+        }
+        
+        function closeWindow() {
+            window.close();
+        }
+    </script>
+</body>
+</html>
