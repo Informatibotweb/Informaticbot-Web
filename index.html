@@ -93,7 +93,7 @@
 
         function searchWikipedia() {
             let query = document.getElementById('searchInput').value;
-            let url = `https://it.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|extracts&exintro=1&explaintext=1&pithumbsize=200&generator=search&gsrsearch=${encodeURIComponent(query)}`;
+            let url = `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages|extracts&exintro=1&explaintext=1&pithumbsize=200&generator=search&gsrsearch=${encodeURIComponent(query)}`;
             
             fetch(url)
                 .then(response => response.json())
